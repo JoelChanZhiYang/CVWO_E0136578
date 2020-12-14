@@ -14,17 +14,21 @@ class Api::V1::TodosController < ApplicationController
   end
 
   def destroy
-    find_todo.destory
+    find_todo.destroy
     render json: {message: 'Deleted'}
   end
 
+  def update
+    todo = find_todo
+    todo.update(todo_params)
+  end
   private
 
   def todo_params
-    params.permit(:action, :completed)
+    params.permit(:task, :completed)
   end
 
   def find_todo
-    @recipe = Recipe.find(params[:id])
+    @todo = Todo.find(params[:id])
   end
 end

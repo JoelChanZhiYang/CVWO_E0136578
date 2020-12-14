@@ -1,4 +1,3 @@
 class Todo < ApplicationRecord
-    validates :action, presence: true
-    validates :completed, presence: true
+    validates :task, presence: true
 end

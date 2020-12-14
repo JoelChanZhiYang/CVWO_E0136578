@@ -8,14 +8,14 @@
 
 9.times do |i|
     Todo.create(
-        action: "do work #{i}",
+        task: "do work #{i}",
         completed: false
     )
 end
 
 9.times do |i|
     Todo.create(
-        action: "do work #{i+9}",
+        task: "do work #{i+9}",
         completed: true
     )
 end
