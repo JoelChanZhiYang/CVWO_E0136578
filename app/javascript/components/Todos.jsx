@@ -1,29 +1,44 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import 'react-responsive-modal/styles.css';
+import {Modal} from "react-responsive-modal"
+import '../stylesheets/todo.css'
+import Popup from './Popup'
 
 class Todos extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            todos:[]
+            todos: [],
+            popUp: false
         };
         this.onSubmit = this.onSubmit.bind(this);
         this.onDelete = this.onDelete.bind(this);
+        this.onClick = this.onClick.bind(this);
+        this.onInput = this.onInput.bind(this);
+        this.onOpenModal = this.onOpenModal.bind(this);
+        this.onCloseModal = this.onCloseModal.bind(this);
     }
 
     make_todo_html(action, index, todo){
         return (
             <div key= {index} className="d-flex justify-content-center">
-                <input type ="checkbox" value = {todo.id} checked = {todo.completed ? true : false} onClick={this.onClick(todo)}/>
+                <input type ="checkbox" value = {todo.id} checked = {todo.completed ? true : false} onChange={this.onClick(todo)}/>
                 <div className="card px-3">
-                    <li key={index}>{action}</li>
+                    <li onClick={this.onOpenModal(todo)}>{action}</li>
                 </div>
                 <button value = {todo.id} onClick={this.onDelete}>x</button>
             </div>
             )
     }
 
-    
+    onOpenModal(todo){
+        return event => this.setState({popUp:true, popUpTodo: todo})
+    }
+
+    onCloseModal(event){
+        this.setState({popUp: false})
+    }
 
     onSubmit(event){
         event.preventDefault();
@@ -58,7 +73,6 @@ class Todos extends React.Component {
 
     onDelete(event){
         const todo_id = event.target.value
-        console.log(todo_id, this)
         const url = `/api/v1/todos/destroy/${todo_id}`;
         const token = document.querySelector('meta[name="csrf-token"]').content;
         fetch(url, {
@@ -85,25 +99,72 @@ class Todos extends React.Component {
 
     }
 
-
     onClick(todo){
         return event => {
-            console.log(event)
             const todo_id = event.target.value
-
             const url = `api/v1/todos/update/${todo_id}`;
             const token = document.querySelector('meta[name="csrf-token"]').content;
             const body = {task: todo.task,
-                          completed: true}
-            console.log(body)
+                          completed: !todo.completed}
             fetch(url, {
                 method: "PUT",
                 headers:{
                     "X-CSRF-Token": token,
                     "Content-Type": "application/json"
-                }
+                },
+                body: JSON.stringify(body)
             })
+                .then(response => {
+                    if (response.ok){
+                        return response.json()
+                    } else {
+                        throw new Error("onClick not done")
+                    }
+                })
+                    .then(response => {
+                        let new_state = this.state.todos.slice()
+                        const curr_todo = new_state.find(x => x.id == response.id)
+                        curr_todo.completed = !curr_todo.completed
+                        curr_todo.updated_at = response.updated_at
+                        this.setState(new_state)
+                    })
+                    .catch(error => console.log(error.message))
         }
+    }
+
+
+    onInput(todo){
+        return event => {
+            const todo_id = todo.id
+            const value = event.target.value
+            const url = `api/v1/todos/update/${todo_id}`;
+            const token = document.querySelector('meta[name="csrf-token"]').content;
+            const body = {task: value,
+                          completed: todo.completed}
+            fetch(url, {
+                method: "PUT",
+                headers:{
+                    "X-CSRF-Token": token,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(body)
+            })
+                .then(response => {
+                    if (response.ok){
+                        return response.json()
+                    } else {
+                        throw new Error("onClick not done")
+                    }
+                })
+                    .then(response => {
+                        let new_state = this.state.todos.slice()
+                        const curr_todo = new_state.find(x=> x.id == todo.id)
+                        curr_todo.task = value
+                        this.setState(new_state)
+
+                    })
+                    .catch(error => console.log(error.message))
+        }   
     }
 
     componentDidMount(){
@@ -133,27 +194,30 @@ class Todos extends React.Component {
         const uncompletedTodos = todos.filter(x => x.completed == false)
         completedTodos.sort(this.comp)
         uncompletedTodos.sort(this.comp)
-        const completed_out = completedTodos.map((todo, index) => this.make_todo_html(todo.task, index, todo));
-        const uncompleted_out = uncompletedTodos.map((todo, index) => this.make_todo_html(todo.task, index, todo));
+        const completed_out = completedTodos.map(todo => this.make_todo_html(todo.task, todo.id, todo));
+        const uncompleted_out = uncompletedTodos.map(todo=> this.make_todo_html(todo.task, todo.id, todo));
+        const {popUp} = this.state
 
         return (
-        <div>
-            <div className="add-items d-flex justify-content-center">
-                <form onSubmit={this.onSubmit}>
-                    <input type="text" name = "new_todo"></input>
-                    <input type="submit"/>
-                </form>
-            </div>
+            <div>
+                <Modal open = {this.state.popUp} onClose = {this.onCloseModal} center>
+                    <Popup todo={this.state.popUpTodo} input={this.onInput(this.state.popUpTodo)}/>
+                </Modal>
+                <div className="add-items d-flex justify-content-center">
+                    <form onSubmit={this.onSubmit}>
+                        <input type="text" name = "new_todo"></input>
+                        <input type="submit"/>
+                    </form>
+                </div>
 
-            <br></br>
-            
-            <ul>{uncompleted_out}</ul>
-            <br></br>
-            <ul>{completed_out}</ul>
-        </div>
+                <br></br>
+                
+                <ul>{uncompleted_out}</ul>
+                <br></br>
+                <ul>{completed_out}</ul>
+            </div>
         );
     }
 }
 
-export default Todos;
-
+export default Todos;   

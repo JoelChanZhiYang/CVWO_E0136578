@@ -21,7 +21,9 @@ class Api::V1::TodosController < ApplicationController
   def update
     todo = find_todo
     todo.update(todo_params)
+    render json: todo
   end
+
   private
 
   def todo_params
