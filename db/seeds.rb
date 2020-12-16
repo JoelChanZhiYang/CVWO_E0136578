@@ -6,16 +6,29 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
-9.times do |i|
-    Todo.create(
-        task: "do work #{i}",
-        completed: false
-    )
-end
+# 9.times do |i|
+#     Todo.create(
+#         task: "do work #{i}",
+#         completed: false
+#     )
+# end
 
-9.times do |i|
-    Todo.create(
-        task: "do work #{i+9}",
-        completed: true
-    )
-end
+# 9.times do |i|
+#     Todo.create(
+#         task: "do work #{i+9}",
+#         completed: true
+#     )
+# end
+
+# 3.times do |i|
+#     Tag.create(
+#         name: "Category #{i}"
+#     )
+# end
+
+
+
+Tag.create_tags_for_todo(
+    todo_id: 81,
+    tag_id:1
+)

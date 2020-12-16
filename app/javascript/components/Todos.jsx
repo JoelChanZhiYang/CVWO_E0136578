@@ -181,6 +181,32 @@ class Todos extends React.Component {
             .catch(() => "error");
     }
 
+    // testFunction(){
+    //     const url = `api/v1/tags/destroyLink/`;
+    //     const token = document.querySelector('meta[name="csrf-token"]').content;
+    //     const body = {todo_id: 81,
+    //                   tag_id:5}
+    //     fetch(url, {
+    //         method: "DELETE",
+    //         headers:{
+    //             "X-CSRF-Token": token,
+    //             "Content-Type": "application/json"
+    //         },
+    //         body: JSON.stringify(body)
+    //     })
+    //         .then(response => {
+    //             if (response.ok){
+    //                 return response.json()
+    //             } else {
+    //                 throw new Error("onClick not done")
+    //             }
+    //         })
+    //             .then(response => {
+    //                 console.log(response)
+    //             })
+    //             .catch(error => console.log(error.message))
+    // }
+
     comp(a, b){
         const keyA = a.updated_at
         const keyB = b.updated_at

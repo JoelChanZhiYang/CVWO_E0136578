@@ -5,6 +5,12 @@ Rails.application.routes.draw do
       post 'todos/create'
       delete 'todos/destroy/:id', to: 'todos#destroy'
       put 'todos/update/:id', to: 'todos#update'
+
+      get 'tags/index'
+      post 'tags/create'
+      get 'tags/find/:todo_id', to: 'tags#find_tags_of_todo'
+      post 'tags/link/', to: 'tags#create_tags_for_todo'
+      delete 'tags/destroyLink/', to: 'tags#destroy_link'
     end
   end
   root 'homepage#index'
