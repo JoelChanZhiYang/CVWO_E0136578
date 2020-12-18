@@ -1,5 +1,6 @@
 {
   "name": "cvwo",
+  "license": "MIT",
   "dependencies": {
     "@babel/preset-react": "^7.12.7",
     "@rails/actioncable": "^6.0.0",
