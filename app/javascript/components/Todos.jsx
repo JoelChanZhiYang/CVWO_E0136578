@@ -179,6 +179,19 @@ class Todos extends React.Component {
             })
             .then(response => this.setState({todos: response}))
             .catch(() => "error");
+
+
+        const url1 = 'api/v1/tags/index'
+        fetch(url1)
+            .then(response => {
+                if (response.ok){
+                    return response.json();
+                } else {
+                    throw new Error();
+                }
+            })
+                .then(response => this.setState({tags:response}))
+                .catch(e => console.log(e.message))
     }
 
     // testFunction(){
@@ -222,12 +235,11 @@ class Todos extends React.Component {
         uncompletedTodos.sort(this.comp)
         const completed_out = completedTodos.map(todo => this.make_todo_html(todo.task, todo.id, todo));
         const uncompleted_out = uncompletedTodos.map(todo=> this.make_todo_html(todo.task, todo.id, todo));
-        const {popUp} = this.state
 
         return (
             <div>
                 <Modal open = {this.state.popUp} onClose = {this.onCloseModal} center>
-                    <Popup todo={this.state.popUpTodo} input={this.onInput(this.state.popUpTodo)}/>
+                    <Popup todo={this.state.popUpTodo} input={this.onInput(this.state.popUpTodo)} tagList = {this.state.tags}/>
                 </Modal>
                 <div className="add-items d-flex justify-content-center">
                     <form onSubmit={this.onSubmit}>
