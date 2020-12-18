@@ -1,6 +1,5 @@
 {
-  "name": "CVWO",
-  "private": true,
+  "name": "cvwo",
   "dependencies": {
     "@babel/preset-react": "^7.12.7",
     "@rails/actioncable": "^6.0.0",
