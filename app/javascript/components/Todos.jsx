@@ -72,7 +72,7 @@ class Todos extends React.Component {
     }
 
     onDelete(event){
-        const todo_id = event.target.value
+        const todo_id = event.target.value;
         const url = `/api/v1/todos/destroy/${todo_id}`;
         const token = document.querySelector('meta[name="csrf-token"]').content;
         fetch(url, {
