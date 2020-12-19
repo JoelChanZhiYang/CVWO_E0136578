@@ -7,10 +7,7 @@ import { render } from "react-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import $ from 'jquery';
 import Popper from 'popper.js';
-import '.../app/stylesheets/application'
 import App from "../components/App";
-
-console.log("hihihi")
 
 document.addEventListener("DOMContentLoaded", () => {
   render(
