@@ -26,12 +26,7 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        loader: require.resolve('css-loader'),
-        options: {
-          modules: true,
-          importLoaders: 1
-
-        }
+        loader: 'style-loader!css-loader'
       },
       {
         test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2)$/,
