@@ -26,9 +26,11 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        loader: 'style-loader!css-loader',
+        loader: require.resolve('css-loader'),
         options: {
-          modules: true
+          modules: true,
+          importLoaders: 1
+
         }
       },
       {
