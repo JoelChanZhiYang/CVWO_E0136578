@@ -1,5 +1,4 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import 'react-responsive-modal/styles.css';
 import {Modal} from "react-responsive-modal"
 import '../stylesheets/todo.css'
@@ -14,8 +13,8 @@ class Todos extends React.Component {
         };
         this.onSubmit = this.onSubmit.bind(this);
         this.onDelete = this.onDelete.bind(this);
-        this.onClick = this.onClick.bind(this);
-        this.onInput = this.onInput.bind(this);
+        this.changeCompletedStatus = this.changeCompletedStatus.bind(this);
+        this.changeTodoTask = this.changeTodoTask.bind(this);
         this.onOpenModal = this.onOpenModal.bind(this);
         this.onCloseModal = this.onCloseModal.bind(this);
     }
@@ -23,13 +22,40 @@ class Todos extends React.Component {
     make_todo_html(action, index, todo){
         return (
             <div key= {index} className="d-flex justify-content-center">
-                <input type ="checkbox" value = {todo.id} checked = {todo.completed ? true : false} onChange={this.onClick(todo)}/>
+                <input type ="checkbox" value = {todo.id} checked = {todo.completed ? true : false} onChange={this.changeCompletedStatus(todo)}/>
                 <div className="card px-3">
                     <li onClick={this.onOpenModal(todo)}>{action}</li>
                 </div>
                 <button value = {todo.id} onClick={this.onDelete}>x</button>
             </div>
             )
+    }
+
+    retrieve(url, method, body, callback, token){
+        const options = {
+            method: method,
+            mod: 'cors',
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json"
+            },
+        }
+        if (body){
+            options.body = JSON.stringify(body);
+        }
+        if (token){
+            options.headers["X-CSRF-Token"] = token;
+        }
+        fetch(url, options)
+            .then(response => {
+                if (response.ok){
+                    return response.json();
+                } else {
+                    throw new Error();
+                }
+            })
+            .then(callback)
+            .catch(error => console.log(error.message))
     }
 
     onOpenModal(todo){
@@ -44,96 +70,51 @@ class Todos extends React.Component {
         event.preventDefault();
         const newAction = event.target[0].value
         const url = "/api/v1/todos/create";
-        const body1 = {task: newAction, 
+        const body = {task: newAction, 
                 completed: false};
         const token = document.querySelector('meta[name="csrf-token"]').content;
-        fetch(url, {
-            method: "POST",
-            headers: {
-                "X-CSRF-Token": token,
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(body1)
-        })
-        .then(response => {
-                if (response.ok){
-                    return response.json();
-                } else {
-                    throw new Error();
-                }
-            })
-        .then(response => {
-            const new_state = this.state.todos.slice(0)
-            new_state.unshift(response)
-            this.setState({todos:new_state})
-            event.target[0].value = ""
-        })
-        .catch(error => console.log(error.message));
+        const cb = response => {
+            const new_state = this.state.todos.slice(0);
+            new_state.unshift(response);
+            this.setState({todos:new_state});
+            event.target[0].value = "";
+        }
+        this.retrieve(url, "POST", body, cb, token)
     }
 
     onDelete(event){
         const todo_id = event.target.value;
         const url = `/api/v1/todos/destroy/${todo_id}`;
         const token = document.querySelector('meta[name="csrf-token"]').content;
-        fetch(url, {
-            method:"DELETE",
-            headers: {
-                "X-CSRF-Token": token,
-                "Content-Type": "application/json"
-            }
-        })
-            .then(response => {
-                if (response.ok){
-                    return response.json();
-                } else {
-                    throw new Error();
-                }
-            })
-            .then(response => {
-                let new_state = this.state.todos.slice()
-                new_state = new_state.filter(x => x.id != todo_id)
-                this.setState({todos:new_state})
-
-            })
-            .catch(error => console.log(error.message))
+        const cb = response => {
+            let new_state = this.state.todos.slice()
+            new_state = new_state.filter(x => x.id !== parseInt(todo_id))
+            this.setState({todos:new_state})
+        }
+        this.retrieve(url, "DELETE", null, cb, token);
 
     }
 
-    onClick(todo){
+    changeCompletedStatus(todo){
         return event => {
             const todo_id = event.target.value
             const url = `api/v1/todos/update/${todo_id}`;
             const token = document.querySelector('meta[name="csrf-token"]').content;
             const body = {task: todo.task,
                           completed: !todo.completed}
-            fetch(url, {
-                method: "PUT",
-                headers:{
-                    "X-CSRF-Token": token,
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(body)
-            })
-                .then(response => {
-                    if (response.ok){
-                        return response.json()
-                    } else {
-                        throw new Error("onClick not done")
-                    }
-                })
-                    .then(response => {
-                        let new_state = this.state.todos.slice()
-                        const curr_todo = new_state.find(x => x.id == response.id)
-                        curr_todo.completed = !curr_todo.completed
-                        curr_todo.updated_at = response.updated_at
-                        this.setState(new_state)
-                    })
-                    .catch(error => console.log(error.message))
+            const cb = response => {
+                let new_state = this.state.todos.slice()
+                const curr_todo = new_state.find(x => x.id === response.id)
+                curr_todo.completed = !curr_todo.completed
+                curr_todo.updated_at = response.updated_at
+                this.setState(new_state)
+            }
+            this.retrieve(url, "PUT", body, cb, token);
         }
     }
 
 
-    onInput(todo){
+    changeTodoTask(todo){
         return event => {
             const todo_id = todo.id
             const value = event.target.value
@@ -141,57 +122,26 @@ class Todos extends React.Component {
             const token = document.querySelector('meta[name="csrf-token"]').content;
             const body = {task: value,
                           completed: todo.completed}
-            fetch(url, {
-                method: "PUT",
-                headers:{
-                    "X-CSRF-Token": token,
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(body)
-            })
-                .then(response => {
-                    if (response.ok){
-                        return response.json()
-                    } else {
-                        throw new Error("onClick not done")
-                    }
-                })
-                    .then(response => {
-                        let new_state = this.state.todos.slice()
-                        const curr_todo = new_state.find(x=> x.id == todo.id)
-                        curr_todo.task = value
-                        this.setState(new_state)
-
-                    })
-                    .catch(error => console.log(error.message))
+            const cb = response => {
+                let new_state = this.state.todos.slice()
+                const curr_todo = new_state.find(x=> x.id === todo.id)
+                curr_todo.task = value
+                this.setState(new_state)
+            }
+            this.retrieve(url, "PUT", body, cb, token);
         }   
     }
 
     componentDidMount(){
         const url = 'api/v1/todos/index'
-        fetch(url)
-            .then(response => {
-                if (response.ok){
-                    return response.json();
-                } else {
-                    throw new Error();
-                }
-            })
-            .then(response => this.setState({todos: response}))
-            .catch(() => "error");
-
+        const cb = response => {
+            this.setState({todos: response})
+        }
+        this.retrieve(url, "GET", null, cb);
 
         const url1 = 'api/v1/tags/index'
-        fetch(url1)
-            .then(response => {
-                if (response.ok){
-                    return response.json();
-                } else {
-                    throw new Error();
-                }
-            })
-                .then(response => this.setState({tags:response}))
-                .catch(e => console.log(e.message))
+        const cb1 = response => this.setState({tags:response})
+        this.retrieve(url1, "GET", null, cb1);
     }
 
     // testFunction(){
@@ -239,7 +189,7 @@ class Todos extends React.Component {
         return (
             <div>
                 <Modal open = {this.state.popUp} onClose = {this.onCloseModal} center>
-                    <Popup todo={this.state.popUpTodo} input={this.onInput(this.state.popUpTodo)} tagList = {this.state.tags}/>
+                    <Popup todo={this.state.popUpTodo} input={this.changeTodoTask(this.state.popUpTodo)} tagList = {this.state.tags} retrieve ={this.retrieve}/>
                 </Modal>
                 <div className="add-items d-flex justify-content-center">
                     <form onSubmit={this.onSubmit}>

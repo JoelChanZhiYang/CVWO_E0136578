@@ -20,15 +20,15 @@
 #     )
 # end
 
-# 3.times do |i|
-#     Tag.create(
-#         name: "Category #{i}"
-#     )
-# end
+3.times do |i|
+    Tag.create(
+        name: "Category #{i}"
+    )
+end
 
 
 
-Tag.create_tags_for_todo(
-    todo_id: 81,
-    tag_id:1
-)
+# Tag.create_tags_for_todo(
+#     todo_id: 81,
+#     tag_id:1
+# )
