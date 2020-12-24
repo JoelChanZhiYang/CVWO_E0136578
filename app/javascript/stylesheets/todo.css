@@ -1,0 +1,28 @@
+ul{
+    padding:0px;
+    list-style-type: none;
+
+}
+
+.todo{
+    display:inline-block;
+    position:relative;
+    width: 100%;
+    padding: 5px;
+}
+
+.task{
+    display:inline-block; 
+    position: relative;
+}
+
+.checkBox{
+    margin-left: 0px;
+}
+
+.actionBox{
+    width: auto;
+    display: inline-block;
+    left: 22px;
+    position: relative;
+}

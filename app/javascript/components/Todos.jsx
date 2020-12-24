@@ -19,18 +19,6 @@ class Todos extends React.Component {
         this.onCloseModal = this.onCloseModal.bind(this);
     }
 
-    make_todo_html(action, index, todo){
-        return (
-            <div key= {index} className="d-flex justify-content-center">
-                <input type ="checkbox" value = {todo.id} checked = {todo.completed ? true : false} onChange={this.changeCompletedStatus(todo)}/>
-                <div className="card px-3">
-                    <li onClick={this.onOpenModal(todo)}>{action}</li>
-                </div>
-                <button value = {todo.id} onClick={this.onDelete}>x</button>
-            </div>
-            )
-    }
-
     retrieve(url, method, body, callback, token){
         const options = {
             method: method,
@@ -144,38 +132,36 @@ class Todos extends React.Component {
         this.retrieve(url1, "GET", null, cb1);
     }
 
-    // testFunction(){
-    //     const url = `api/v1/tags/destroyLink/`;
-    //     const token = document.querySelector('meta[name="csrf-token"]').content;
-    //     const body = {todo_id: 81,
-    //                   tag_id:5}
-    //     fetch(url, {
-    //         method: "DELETE",
-    //         headers:{
-    //             "X-CSRF-Token": token,
-    //             "Content-Type": "application/json"
-    //         },
-    //         body: JSON.stringify(body)
-    //     })
-    //         .then(response => {
-    //             if (response.ok){
-    //                 return response.json()
-    //             } else {
-    //                 throw new Error("onClick not done")
-    //             }
-    //         })
-    //             .then(response => {
-    //                 console.log(response)
-    //             })
-    //             .catch(error => console.log(error.message))
-    // }
-
     comp(a, b){
         const keyA = a.updated_at
         const keyB = b.updated_at
         return keyA > keyB ? -1
                             : keyA < keyB ? 1 : 0
     }
+    
+    make_todo_html(action, index, todo){
+        return (
+            <div key= {index} className="row justify-content-center">
+                <div className = "col-sm-12 col-md-7 col-lg-5 task">
+                    <div className="card px-3 card todo">
+                        <input type ="checkbox"
+                            value = {todo.id} 
+                            checked = {todo.completed ? true : false} 
+                            onChange={this.changeCompletedStatus(todo)}
+                            className="form-check-input checkBox"
+                        />
+                        <div onClick={this.onOpenModal(todo)} 
+                            className="actionBox">{action}</div>
+                        <button value = {todo.id} 
+                            onClick={this.onDelete}
+                            className="close">x</button>
+                    </div>
+
+                </div>
+            </div>
+            )
+    }
+
 
     render() {
         const todos = this.state.todos
@@ -187,15 +173,12 @@ class Todos extends React.Component {
         const uncompleted_out = uncompletedTodos.map(todo=> this.make_todo_html(todo.task, todo.id, todo));
 
         return (
-            <div>
-                <Modal open = {this.state.popUp} onClose = {this.onCloseModal} center>
-                    <Popup todo={this.state.popUpTodo} input={this.changeTodoTask(this.state.popUpTodo)} tagList = {this.state.tags} retrieve ={this.retrieve}/>
-                </Modal>
-                <div className="add-items d-flex justify-content-center">
-                    <form onSubmit={this.onSubmit}>
-                        <input type="text" name = "new_todo"></input>
-                        <input type="submit"/>
-                    </form>
+            <div className="container mt-4">
+                <div className= "row justify-content-center">
+                        <form onSubmit={this.onSubmit} className="col-sm-12 col-md-7 col-lg-5 form-inline add_todo">
+                            <input type="text" name = "new_todo" className="form-control block col-8"></input>
+                            <input type="submit" className="btn btn-info col-4"/>
+                        </form>
                 </div>
 
                 <br></br>
@@ -203,6 +186,13 @@ class Todos extends React.Component {
                 <ul>{uncompleted_out}</ul>
                 <br></br>
                 <ul>{completed_out}</ul>
+
+                <Modal open = {this.state.popUp} onClose = {this.onCloseModal} center>
+                    <Popup todo={this.state.popUpTodo} 
+                           input={this.changeTodoTask(this.state.popUpTodo)} 
+                           tagList = {this.state.tags} 
+                           retrieve ={this.retrieve}/>
+                </Modal>
             </div>
         );
     }
