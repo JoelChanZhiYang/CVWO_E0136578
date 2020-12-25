@@ -52,6 +52,7 @@ class Todos extends React.Component {
 
     onCloseModal(event){
         this.setState({popUp: false})
+        this.componentDidMount();
     }
 
     onSubmit(event){
@@ -71,6 +72,7 @@ class Todos extends React.Component {
     }
 
     onDelete(event){
+        event.stopPropagation();
         const todo_id = event.target.value;
         const url = `/api/v1/todos/destroy/${todo_id}`;
         const token = document.querySelector('meta[name="csrf-token"]').content;
@@ -143,20 +145,18 @@ class Todos extends React.Component {
         return (
             <div key= {index} className="row justify-content-center">
                 <div className = "col-sm-12 col-md-7 col-lg-5 task">
-                    <div className="card px-3 card todo">
+                    <div className="card px-3 card todo" onClick={this.onOpenModal(todo)} >
                         <input type ="checkbox"
                             value = {todo.id} 
                             checked = {todo.completed ? true : false} 
                             onChange={this.changeCompletedStatus(todo)}
                             className="form-check-input checkBox"
                         />
-                        <div onClick={this.onOpenModal(todo)} 
-                            className="actionBox">{action}</div>
+                        <div className="actionBox">{action}</div>
                         <button value = {todo.id} 
                             onClick={this.onDelete}
                             className="close">x</button>
                     </div>
-
                 </div>
             </div>
             )
@@ -177,7 +177,7 @@ class Todos extends React.Component {
                 <div className= "row justify-content-center">
                         <form onSubmit={this.onSubmit} className="col-sm-12 col-md-7 col-lg-5 form-inline add_todo">
                             <input type="text" name = "new_todo" className="form-control block col-8"></input>
-                            <input type="submit" className="btn btn-info col-4"/>
+                            <input type="submit" className="btn btn-info col-4 addTodoButton" value="submit"/>
                         </form>
                 </div>
 
@@ -187,7 +187,10 @@ class Todos extends React.Component {
                 <br></br>
                 <ul>{completed_out}</ul>
 
-                <Modal open = {this.state.popUp} onClose = {this.onCloseModal} center>
+                <Modal open = {this.state.popUp} 
+                       onClose = {this.onCloseModal} 
+                       center
+                       >
                     <Popup todo={this.state.popUpTodo} 
                            input={this.changeTodoTask(this.state.popUpTodo)} 
                            tagList = {this.state.tags} 

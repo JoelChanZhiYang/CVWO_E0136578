@@ -45,6 +45,16 @@ class Api::V1::TagsController < ApplicationController
         end
     end
 
+    def destroy
+        tag = find_tag
+        if tag
+            tag.destroy
+            render json: {message: "Deleted"}
+        else 
+            render json: {message: "Unsuccessful"}
+        end
+    end
+
     private
 
     def tag_params

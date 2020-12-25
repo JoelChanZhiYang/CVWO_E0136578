@@ -11,6 +11,7 @@ Rails.application.routes.draw do
       get 'tags/find/:todo_id', to: 'tags#find_tags_of_todo'
       post 'tags/link/', to: 'tags#create_tags_for_todo'
       delete 'tags/destroyLink/', to: 'tags#destroy_link'
+      delete 'tags/destroy/', to: 'tags#destroy'
     end
   end
   root 'homepage#index'

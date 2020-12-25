@@ -1,3 +1,7 @@
+body{
+    background-color: #FAFBF9;
+}
+
 ul{
     padding:0px;
     list-style-type: none;
@@ -8,7 +12,17 @@ ul{
     display:inline-block;
     position:relative;
     width: 100%;
-    padding: 5px;
+    padding: 10px;
+    margin: 2px;
+    background: #3F7DE9;
+}
+
+.todo:hover{
+    background: #A8BEE5;
+}
+
+.todo:hover .actionBox{
+    color: #3F7DE9;
 }
 
 .task{
@@ -25,4 +39,17 @@ ul{
     display: inline-block;
     left: 22px;
     position: relative;
+    color: #FAFBF9;
+    font-weight: 700;
+}
+
+.close{
+    color: white;
+    opacity:0.7;
+}
+.addTodoButton{
+    background: #A1A5AD;
+    color: #FFF;
+    font-weight: 700;
+    border-color: #A1A5AD;
 }
