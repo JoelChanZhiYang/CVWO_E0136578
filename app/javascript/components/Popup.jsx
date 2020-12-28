@@ -55,6 +55,7 @@ class Popup extends React.Component {
             const new_arr = this.state.tags.slice();
             new_arr.push(response.tag);
             this.setState({tags: new_arr});
+            console.log(response)
         };
 
         this.props.retrieve(url, "POST", body, cb, token);
@@ -77,6 +78,8 @@ class Popup extends React.Component {
     tagToggle(todo, tag){
         return event => event.target.checked ? this.createTagforTodo(todo, tag) : this.deleteTagforTodo(todo, tag);
     }
+
+    
 
     newTagHTML(){
         return (
@@ -120,6 +123,7 @@ class Popup extends React.Component {
         this.props.retrieve(url, "POST", body, cb, token);
     }
 
+
     render(){
         const TagHTML = this.state.tagList.map(e => this.createTagHTML(e))
 
@@ -131,8 +135,7 @@ class Popup extends React.Component {
                 {TagHTML}
                 {this.state.newTag ? this.newTagHTML() : ""}
                 <br></br>
-                {this.state.newTag ? "":
-                <input type="button" value="+" onClick={this.openNewTag}/>
+                {!this.state.newTag && this.state.tagList.length < 10 ? <input type="button" value="+" onClick={this.openNewTag}/> : ""
                 }
 
             </div>

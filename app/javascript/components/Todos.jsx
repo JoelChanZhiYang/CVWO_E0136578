@@ -47,7 +47,9 @@ class Todos extends React.Component {
     }
 
     onOpenModal(todo){
-        return event => this.setState({popUp:true, popUpTodo: todo})
+        return event => {
+            this.setState({popUp:true, popUpTodo: todo}
+        )}
     }
 
     onCloseModal(event){
@@ -142,6 +144,7 @@ class Todos extends React.Component {
     }
     
     make_todo_html(action, index, todo){
+        const halt = e => e.stopPropagation();
         return (
             <div key= {index} className="row justify-content-center">
                 <div className = "col-sm-12 col-md-7 col-lg-5 task">
@@ -150,9 +153,11 @@ class Todos extends React.Component {
                             value = {todo.id} 
                             checked = {todo.completed ? true : false} 
                             onChange={this.changeCompletedStatus(todo)}
+                            onClick = {halt} // This is to prevent the click event from propogating into the parent div
+
                             className="form-check-input checkBox"
                         />
-                        <div className="actionBox">{action}</div>
+                        <div className="actionBox cancelled">{action}</div>
                         <button value = {todo.id} 
                             onClick={this.onDelete}
                             className="close">x</button>
