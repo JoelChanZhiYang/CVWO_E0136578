@@ -22,6 +22,7 @@ class Popup extends React.Component {
                     {tag.name}
                     <button value = {tag.id}
                             onClick={this.deleteTags}>x</button>
+                    {/* <div style={{"background": `#${tag.hex}`}}>hello</div> */}
                 </h6>
             </div>
         )
@@ -55,7 +56,6 @@ class Popup extends React.Component {
             const new_arr = this.state.tags.slice();
             new_arr.push(response.tag);
             this.setState({tags: new_arr});
-            console.log(response)
         };
 
         this.props.retrieve(url, "POST", body, cb, token);
@@ -78,8 +78,6 @@ class Popup extends React.Component {
     tagToggle(todo, tag){
         return event => event.target.checked ? this.createTagforTodo(todo, tag) : this.deleteTagforTodo(todo, tag);
     }
-
-    
 
     newTagHTML(){
         return (
@@ -117,10 +115,15 @@ class Popup extends React.Component {
         const token = document.querySelector('meta[name="csrf-token"]').content;
         const cb = response => {
             let newTag = this.state.tagList.slice();
-            newTag.push(response);
+            response.tag.hex = response.color.hex
+            newTag.push(response.tag);  
             this.setState({tagList: newTag});
         };
         this.props.retrieve(url, "POST", body, cb, token);
+    }
+
+    getUnusedColor(){
+        this.props.retrieve("api/v1/colors/first", "GET", null, response => console.log(response), null);
     }
 
 

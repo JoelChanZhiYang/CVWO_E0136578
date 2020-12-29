@@ -1,13 +1,21 @@
 class Api::V1::TagsController < ApplicationController
     def index
         tag = Tag.all
-        render json: tag
+        hex = []
+        tag.each do |i|
+            hex.push(Color.find(i.color_id).hex)
+        end
+        render json: {tags: tag, colors:hex}
     end
 
     def create
-        tag = Tag.create!(tag_params)
+        color = Color.where(:used => false).first
+        tag_stuff = tag_params
+        tag_stuff["color_id"] = color[:id]
+        tag = Tag.create!(tag_stuff)
+        color.update(used:true)
         if tag
-            render json: tag
+            render json: {tag:tag, color: color}
         else
             render json: tag.errors
         end
@@ -47,9 +55,11 @@ class Api::V1::TagsController < ApplicationController
 
     def destroy
         tag = find_tag
+        color = tag.color
         if tag
-            tag.destroy
-            render json: {message: "Deleted"}
+            tag.delete
+            color.update(used:false)
+            render json: {message: color}
         else 
             render json: {message: "Unsuccessful"}
         end

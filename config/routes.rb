@@ -12,6 +12,9 @@ Rails.application.routes.draw do
       post 'tags/link/', to: 'tags#create_tags_for_todo'
       delete 'tags/destroyLink/', to: 'tags#destroy_link'
       delete 'tags/destroy/', to: 'tags#destroy'
+
+      get 'colors/index'
+      get 'colors/find/:color_id', to: 'colors#find'
     end
   end
   root 'homepage#index'

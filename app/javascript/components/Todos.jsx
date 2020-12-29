@@ -132,7 +132,13 @@ class Todos extends React.Component {
         this.retrieve(url, "GET", null, cb);
 
         const url1 = 'api/v1/tags/index'
-        const cb1 = response => this.setState({tags:response})
+        const cb1 = response => {
+            response.tags.map((e, index) => {
+                e.hex = response.colors[index]
+                return e;
+            })
+            this.setState({tags:response.tags})
+        }
         this.retrieve(url1, "GET", null, cb1);
     }
 
@@ -180,7 +186,7 @@ class Todos extends React.Component {
         return (
             <div className="container mt-4">
                 <div className= "row justify-content-center">
-                        <form onSubmit={this.onSubmit} className="col-sm-12 col-md-7 col-lg-5 form-inline add_todo">
+                        <form onSubmit={this.onSubmit} className="col-sm-12 col-md-7 col-lg-5 form-inline add_todo" autoComplete="off">
                             <input type="text" name = "new_todo" className="form-control block col-8"></input>
                             <input type="submit" className="btn btn-info col-4 addTodoButton" value="submit"/>
                         </form>
