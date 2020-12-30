@@ -30,6 +30,7 @@ store = ['e6194b', '3cb44b', 'ffe119', '4363d8', 'f58231', '911eb4', '46f0f0', '
         'fffac8', '800000', 'aaffc3', '808000', 'ffd8b1', '000075', '808080']
 
 Color.delete_all
+Tag.delete_all
 
 store.each do |i|
     Color.create!(
