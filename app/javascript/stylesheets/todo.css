@@ -41,6 +41,11 @@ ul{
     position: relative;
     color: #FAFBF9;
     font-weight: 700;
+    text-overflow: ellipsis;
+    height:25px;
+    white-space: nowrap;
+    width: 90%;
+    overflow: hidden;
 }
 
 .close{
@@ -54,3 +59,4 @@ ul{
     font-weight: 700;
     border-color: #A1A5AD;
 }
+

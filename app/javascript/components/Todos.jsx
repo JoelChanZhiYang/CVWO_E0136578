@@ -154,7 +154,7 @@ class Todos extends React.Component {
         return (
             <div key= {index} className="row justify-content-center">
                 <div className = "col-sm-12 col-md-7 col-lg-5 task">
-                    <div className="card px-3 card todo" onClick={this.onOpenModal(todo)} >
+                    <div className="card px-3 todo" onClick={this.onOpenModal(todo)} >
                         <input type ="checkbox"
                             value = {todo.id} 
                             checked = {todo.completed ? true : false} 
@@ -201,6 +201,9 @@ class Todos extends React.Component {
                 <Modal open = {this.state.popUp} 
                        onClose = {this.onCloseModal} 
                        center
+                       classNames={{
+                           modal:'modal col-sm-8 col-md-5 col-lg-4'
+                       }}
                        >
                     <Popup todo={this.state.popUpTodo} 
                            input={this.changeTodoTask(this.state.popUpTodo)} 

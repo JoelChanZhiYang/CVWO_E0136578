@@ -1,0 +1,20 @@
+.modal{
+    box-sizing: border-box;
+    width: 96%;
+    margin: 2%;
+    height: auto;
+    border-radius: 10px;
+}
+
+.popup_canvas{
+    width: 100%;
+    max-width: 270px;
+    text-align: center;
+    margin: auto;
+}
+
+.edit_todo_form{
+    height: 300px;
+    resize: none;
+    width: 270px;
+}

@@ -1,4 +1,6 @@
 import React from "react";
+import "../stylesheets/popup.css"
+import autosize from 'autosize';
 
 class Popup extends React.Component {
     constructor(props){
@@ -13,7 +15,7 @@ class Popup extends React.Component {
 
     createTagHTML(tag){
         return (
-            <div key = {tag.id}>
+            <div key = {tag.id} className="card px-3">
                 <h6>
                     <input 
                         type="checkbox" 
@@ -96,6 +98,10 @@ class Popup extends React.Component {
 
     componentDidMount(){
         this.tagsOfTodo(this.props.todo)
+        autosize(document.querySelector('textarea'))
+    }
+    componentWillUnmount(){
+        autosize.destroy(document.querySelector('textarea'))
     }
 
     openNewTag(){
@@ -131,9 +137,9 @@ class Popup extends React.Component {
         const TagHTML = this.state.tagList.map(e => this.createTagHTML(e))
 
         return (
-            <div>
+            <div className="popup_canvas">
                 <br></br>
-                <input type="text" defaultValue = {this.props.todo.task} onInput={this.props.input}/>
+                <textarea type="text" defaultValue = {this.props.todo.task} onInput={this.props.input} className="edit_todo_form form-control col-12"/>
                 <br></br>
                 {TagHTML}
                 {this.state.newTag ? this.newTagHTML() : ""}
