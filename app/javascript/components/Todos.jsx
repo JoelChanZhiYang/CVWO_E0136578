@@ -3,6 +3,7 @@ import 'react-responsive-modal/styles.css';
 import {Modal} from "react-responsive-modal"
 import '../stylesheets/todo.css'
 import Popup from './Popup'
+import logo from '../../assets/images/Side Quests Logo.png'
 
 class Todos extends React.Component {
     constructor(props){
@@ -166,7 +167,7 @@ class Todos extends React.Component {
                         <div className="actionBox cancelled">{action}</div>
                         <button value = {todo.id} 
                             onClick={this.onDelete}
-                            className="close">x</button>
+                            className="close del_todo">x</button>
                     </div>
                 </div>
             </div>
@@ -186,10 +187,13 @@ class Todos extends React.Component {
         return (
             <div className="container mt-4">
                 <div className= "row justify-content-center">
-                        <form onSubmit={this.onSubmit} className="col-sm-12 col-md-7 col-lg-5 form-inline add_todo" autoComplete="off">
+                    <div className="col-sm-12 col-md-7 col-lg-5">
+                        <img src={logo}></img>
+                        <form onSubmit={this.onSubmit} className="form-inline add_todo" autoComplete="off">
                             <input type="text" name = "new_todo" className="form-control block col-8"></input>
                             <input type="submit" className="btn btn-info col-4 addTodoButton" value="submit"/>
                         </form>
+                    </div>
                 </div>
 
                 <br></br>

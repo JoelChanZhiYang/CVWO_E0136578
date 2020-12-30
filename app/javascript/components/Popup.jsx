@@ -15,17 +15,19 @@ class Popup extends React.Component {
 
     createTagHTML(tag){
         return (
-            <div key = {tag.id} className="card px-3">
-                <h6>
+            <div key = {tag.id} className="card px-3 tag_canvas" style={{borderColor: `#${tag.hex}`}}>
+                <div className="row_">
                     <input 
                         type="checkbox" 
                         onChange={this.tagToggle(this.props.todo, tag)} 
-                        checked={this.state.tags.some(e=>e.id === tag.id)}/>
-                    {tag.name}
+                        checked={this.state.tags.some(e=>e.id === tag.id)}
+                        className="checkbox tag_check"/>
+                    <div className="tagBox">{tag.name}</div>
                     <button value = {tag.id}
-                            onClick={this.deleteTags}>x</button>
+                            onClick={this.deleteTags}
+                            className="del_tag close">x</button>
                     {/* <div style={{"background": `#${tag.hex}`}}>hello</div> */}
-                </h6>
+                </div>
             </div>
         )
     }
@@ -83,13 +85,15 @@ class Popup extends React.Component {
 
     newTagHTML(){
         return (
-            <div key = {1}>
+            <div key = {1} className="card px-3 tag_canvas">
                 <h6>
                     <form onSubmit={this.unfocusForm}>
-                        <input type="checkbox"/>
+                        <input type="checkbox"
+                               className="tag_check checkbox"/>
                         <input type='text' 
                             autoFocus
                             onBlur={this.unfocusForm}
+                            className="addTagBox"
                             />
                     </form>
                 </h6>
