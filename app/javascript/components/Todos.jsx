@@ -3,14 +3,16 @@ import 'react-responsive-modal/styles.css';
 import {Modal} from "react-responsive-modal"
 import '../stylesheets/todo.css'
 import Popup from './Popup'
-import logo from '../../assets/images/Side Quests Logo.png'
+import logo from '../../assets/images/sideQuestLogo.png'
 
 class Todos extends React.Component {
     constructor(props){
         super(props);
         this.state = {
             todos: [],
-            popUp: false
+            popUp: false,
+            tags: {},
+            tagList:[]
         };
         this.onSubmit = this.onSubmit.bind(this);
         this.onDelete = this.onDelete.bind(this);
@@ -128,19 +130,14 @@ class Todos extends React.Component {
     componentDidMount(){
         const url = 'api/v1/todos/index'
         const cb = response => {
-            this.setState({todos: response})
-        }
-        this.retrieve(url, "GET", null, cb);
-
-        const url1 = 'api/v1/tags/index'
-        const cb1 = response => {
-            response.tags.map((e, index) => {
-                e.hex = response.colors[index]
+            response.tagList.map((e, index) => {
+                e.hex = response.hex[index]
                 return e;
             })
-            this.setState({tags:response.tags})
+
+            this.setState({todos: response.todo, tags:response.tags, tagList:response.tagList})
         }
-        this.retrieve(url1, "GET", null, cb1);
+        this.retrieve(url, "GET", null, cb);
     }
 
     comp(a, b){
@@ -152,6 +149,16 @@ class Todos extends React.Component {
     
     make_todo_html(action, index, todo){
         const halt = e => e.stopPropagation();
+        const tag_labels = (
+        <div className="tag_label_container">
+            {this.state.tagList.filter(tag => this.state.tags[todo.id].some(cur_tag => cur_tag.id == tag.id)).map(e => (
+                <span className="tag_label" 
+                      style={{backgroundColor:`#${e.hex}`}}
+                      key = {e.id}>
+                </span>))}
+        </div>
+        );
+
         return (
             <div key= {index} className="row justify-content-center">
                 <div className = "col-sm-12 col-md-7 col-lg-5 task">
@@ -164,7 +171,10 @@ class Todos extends React.Component {
 
                             className="form-check-input checkBox"
                         />
-                        <div className="actionBox cancelled">{action}</div>
+                        <div className="actionBox cancelled">
+                            <div>{action}</div>
+                            {tag_labels}
+                        </div>
                         <button value = {todo.id} 
                             onClick={this.onDelete}
                             className="close del_todo">x</button>
@@ -173,7 +183,6 @@ class Todos extends React.Component {
             </div>
             )
     }
-
 
     render() {
         const todos = this.state.todos
@@ -191,7 +200,7 @@ class Todos extends React.Component {
                         <img src={logo}></img>
                         <form onSubmit={this.onSubmit} className="form-inline add_todo" autoComplete="off">
                             <input type="text" name = "new_todo" className="form-control block col-8"></input>
-                            <input type="submit" className="btn btn-info col-4 addTodoButton" value="submit"/>
+                            <input type="submit" className="addTodoButton btn btn-info col-4" value="submit"/>
                         </form>
                     </div>
                 </div>
@@ -211,8 +220,9 @@ class Todos extends React.Component {
                        >
                     <Popup todo={this.state.popUpTodo} 
                            input={this.changeTodoTask(this.state.popUpTodo)} 
-                           tagList = {this.state.tags} 
-                           retrieve ={this.retrieve}/>
+                           tagList = {this.state.tagList} 
+                           retrieve ={this.retrieve}
+                           tags = {this.state.tags}/>
                 </Modal>
             </div>
         );

@@ -6,7 +6,7 @@ class Popup extends React.Component {
     constructor(props){
         super(props);
         this.state = {tagList: props.tagList,
-                      tags: [],
+                      tags: props.tags[props.todo.id    ],
                       newTag: false};
         this.openNewTag = this.openNewTag.bind(this);
         this.unfocusForm = this.unfocusForm.bind(this);
@@ -15,14 +15,17 @@ class Popup extends React.Component {
 
     createTagHTML(tag){
         return (
-            <div key = {tag.id} className="card px-3 tag_canvas" style={{borderColor: `#${tag.hex}`}}>
+            <div key = {tag.id} className="card px-3 tag_canvas" >
                 <div className="row_">
                     <input 
                         type="checkbox" 
                         onChange={this.tagToggle(this.props.todo, tag)} 
-                        checked={this.state.tags.some(e=>e.id === tag.id)}
-                        className="checkbox tag_check"/>
-                    <div className="tagBox">{tag.name}</div>
+                        checked={this.state.tags.some(e => e.id === tag.id)}
+                        className="checkbox tag_check"
+                        style = {{backgroundColor: `#${tag.hex}`}}/>
+                    <div className="tagBox" style = {{textDecorationColor: `#${tag.hex}`}}>
+                        {tag.name}
+                    </div>
                     <button value = {tag.id}
                             onClick={this.deleteTags}
                             className="del_tag close">x</button>
@@ -41,14 +44,6 @@ class Popup extends React.Component {
             this.setState({tagList: newTags.filter(e => e.id !== parseInt(event.target.value))});
         };
         this.props.retrieve(url, "DELETE", body, cb, token);
-    }
-
-    tagsOfTodo(todo){
-        const url = `api/v1/tags/find/${todo.id}`;
-        const cb = response => {
-            this.setState({"tags": response})
-        };
-        this.props.retrieve(url, "GET", null, cb, null);
     }
 
     createTagforTodo(todo, tag){
@@ -101,7 +96,6 @@ class Popup extends React.Component {
         )}
 
     componentDidMount(){
-        this.tagsOfTodo(this.props.todo)
         autosize(document.querySelector('textarea'))
     }
     componentWillUnmount(){

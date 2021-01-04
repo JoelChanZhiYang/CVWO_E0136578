@@ -1,5 +1,5 @@
 body{
-    background-color: #FAFBF9;
+    background-color: #fafaf9;
 }
 
 ul{
@@ -14,15 +14,15 @@ ul{
     width: 100%;
     padding: 10px;
     margin: 2px;
-    background: #3F7DE9;
+    background: #363954;
 }
 
 .todo:hover{
-    background: #A8BEE5;
+    background: #6E74AC;
 }
 
 .todo:hover .actionBox{
-    color: #3F7DE9;
+    color: #fafaf9;
 }
 
 .task{
@@ -42,7 +42,7 @@ ul{
     color: #FAFBF9;
     font-weight: 700;
     text-overflow: ellipsis;
-    height:25px;
+    height: 29px;
     white-space: nowrap;
     width: 90%;
     overflow: hidden;
@@ -60,3 +60,39 @@ ul{
     border-color: #A1A5AD;
 }
 
+.addTodoButton:hover{
+    background-color: #6E74AC;
+    border: none !important;
+}
+
+.btn-info:focus{
+    background-color: #363954;
+    box-shadow: 0 0 0 0.2rem #C8CDFF;
+}
+.btn-info:active{
+    background-color: #363954 !important;
+}
+
+.form-control:focus{
+    border: 1px solid #6E74AC;
+    box-shadow: 0 0 0 0.2rem #C8CDFF;
+}
+img{
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+.tag_label_container{
+    display: flex;
+    justify-content: flex-start;
+    margin: 0;
+}
+
+.tag_label{
+    width: 10%;
+    height: 5px;
+    background: black;
+    margin: 0;
+}

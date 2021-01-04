@@ -1,7 +1,17 @@
 class Api::V1::TodosController < ApplicationController
   def index
     todo = Todo.all
-    render json: todo
+    tags = {}
+    tagList = Tag.all
+    hex = []
+    todo.each do |i|
+      tags[i.id] = i.tags
+    end
+    tagList.each do |i|
+      hex.push(Color.find(i.color_id).hex)
+    end
+
+    render json: {todo:todo, tags:tags, tagList:tagList, hex:hex}
   end
 
   def create

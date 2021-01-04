@@ -24,6 +24,11 @@ class Api::V1::TagsController < ApplicationController
     def find_tags_of_todo
         # tag = Todo.includes(:tags).find(params[:todo_id]).tags
         tag = find_todo.tags
+        hex = []
+        tag.each do |i|
+            hex.push(Color.find(i.color_id).hex)
+        end
+
         render json: tag
     end
 

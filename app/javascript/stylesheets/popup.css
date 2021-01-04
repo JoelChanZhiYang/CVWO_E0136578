@@ -4,6 +4,7 @@
     margin: 2%;
     height: auto;
     border-radius: 10px;
+    background-color: #363954;
 }
 
 .popup_canvas{
@@ -17,6 +18,14 @@
     height: 300px;
     resize: none;
     width: 270px;
+    background: #6E74AC;
+    color: white;
+    font-weight: bolder;
+}
+
+.edit_todo_form:focus{
+    background: #6E74AC !important;
+    color: white !important;
 }
 
 .tag_canvas{
@@ -28,6 +37,7 @@
     width: 100%;
     height: 42px;
     padding: 4px 0px;
+    background-color: #6E74AC;
 }
 
 .del_tag{
@@ -36,7 +46,7 @@
 
 .tagBox{
     display: inline-block;
-    color: #000;
+    color: #FFF;
     font-weight: 700;
     text-overflow: ellipsis;
     height:25px;
@@ -45,6 +55,9 @@
     overflow: hidden;
     vertical-align: middle;
     margin: 4px;
+    text-decoration: underline;
+    text-decoration-skip-ink: none;
+    text-decoration-thickness: 4px;
 }
 
 .tag_check{
@@ -61,9 +74,3 @@
     width: 80%;
 }
 
-img{
-    width: 80%;
-    margin-left: auto;
-    margin-right: auto;
-    display: block;
-}
