@@ -64,11 +64,12 @@ class Todos extends React.Component {
         const newAction = event.target[0].value
         const url = "/api/v1/todos/create";
         const body = {task: newAction, 
-                completed: false};
+                      completed: false,
+                      tag_id: this.state.sort_by_tag ? this.state.sort_by_tag.id : null};
         const token = document.querySelector('meta[name="csrf-token"]').content;
         const cb = response => {
             this.setState(state => ({todos: state.todos.concat(response),
-                                     tags: {...state.tags, [response.id]:[]}})
+                                     tags: {...state.tags, [response.id]: this.state.sort_by_tag?[this.state.sort_by_tag]:[]}})
             );
             event.target[0].value = "";
         }
@@ -124,7 +125,6 @@ class Todos extends React.Component {
     }
 
     componentDidMount(){
-        console.log("hi")
         const url = 'api/v1/todos/index'
         const cb = response => {
             response.tagList.map((e, index) => {

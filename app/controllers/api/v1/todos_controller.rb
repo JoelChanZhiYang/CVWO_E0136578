@@ -16,7 +16,11 @@ class Api::V1::TodosController < ApplicationController
 
   def create
     todo = Todo.create!(todo_params)
+    tag = find_tag
     if todo
+      if tag
+        todo.tags << tag
+      end
       render json: todo
     else
       render json: todo.errors
@@ -42,5 +46,13 @@ class Api::V1::TodosController < ApplicationController
 
   def find_todo
     @todo = Todo.find(params[:id])
+  end
+
+  def find_tag
+    begin
+        @tag = Tag.find(params[:tag_id])
+    rescue
+        false
+    end
   end
 end
