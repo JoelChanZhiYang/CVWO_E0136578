@@ -11,9 +11,11 @@ class Api::V1::TagsController < ApplicationController
     def create
         color = Color.where(:used => false).first
         tag_stuff = tag_params
+        # todo = find_todo
         tag_stuff["color_id"] = color[:id]
         tag = Tag.create!(tag_stuff)
         color.update(used:true)
+        find_todo.tags << tag
         if tag
             render json: {tag:tag, color: color}
         else
@@ -22,7 +24,6 @@ class Api::V1::TagsController < ApplicationController
     end
 
     def find_tags_of_todo
-        # tag = Todo.includes(:tags).find(params[:todo_id]).tags
         tag = find_todo.tags
         hex = []
         tag.each do |i|

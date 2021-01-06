@@ -6,7 +6,7 @@ class Popup extends React.Component {
     constructor(props){
         super(props);
         this.state = {tagList: props.tagList,
-                      tags: props.tags[props.todo.id    ],
+                      tags: props.tags[props.todo.id],
                       newTag: false};
         this.openNewTag = this.openNewTag.bind(this);
         this.unfocusForm = this.unfocusForm.bind(this);
@@ -29,7 +29,6 @@ class Popup extends React.Component {
                     <button value = {tag.id}
                             onClick={this.deleteTags}
                             className="del_tag close">x</button>
-                    {/* <div style={{"background": `#${tag.hex}`}}>hello</div> */}
                 </div>
             </div>
         )
@@ -41,7 +40,7 @@ class Popup extends React.Component {
         const body = {tag_id: event.target.value}
         const cb = response => {
             let newTags = this.state.tagList.slice();
-            parseInt(event.target.value) === this.props.sort_by ? this.props.nullify_sort_by() : ""
+            this.props.sort_by_tag ? parseInt(event.target.value) === this.props.sort_by_tag.id ? this.props.nullify_sort_by() : "" :""
             this.setState({tagList: newTags.filter(e => e.id !== parseInt(event.target.value))});
         };
         this.props.retrieve(url, "DELETE", body, cb, token);
@@ -116,14 +115,15 @@ class Popup extends React.Component {
 
     addTag(tagName){
         const url = "api/v1/tags/create/";
-        const body = {name: tagName};
+        const body = {name: tagName,
+                      todo_id: this.props.todo.id};
         const token = document.querySelector('meta[name="csrf-token"]').content;
         const cb = response => {
-            let newTag = this.state.tagList.slice();
-            response.tag.hex = response.color.hex
-            newTag.push(response.tag);  
-            
-            this.setState({tagList: newTag});
+            this.setState(state => {
+                const newTag = {...response.tag, hex: response.color.hex}
+                return {tagList: state.tagList.concat(newTag),
+                        tags: state.tags.concat(newTag)}
+            })
         };
         this.props.retrieve(url, "POST", body, cb, token);
     }

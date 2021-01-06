@@ -13,8 +13,7 @@ class Todos extends React.Component {
             popUp: false,
             tags: {},
             tagList:[],
-            sort_by: null,
-
+            sort_by_tag: null
         };
         this.onSubmit = this.onSubmit.bind(this);
         this.onDelete = this.onDelete.bind(this);
@@ -52,9 +51,7 @@ class Todos extends React.Component {
     }
 
     onOpenModal(todo){
-        return event => {
-            this.setState({popUp:true, popUpTodo: todo}
-        )}
+        return event => this.setState({popUp:true, popUpTodo: todo})
     }
 
     onCloseModal(event){
@@ -120,16 +117,14 @@ class Todos extends React.Component {
             const body = {task: value,
                           completed: todo.completed}
             const cb = response => {
-                let new_state = this.state.todos.slice()
-                const curr_todo = new_state.find(x=> x.id === todo.id)
-                curr_todo.task = value
-                this.setState(new_state)
+                // this.setState(state => ({todos: state.todos.map(e => e.id === todo.id ? value : e)}))
             }
             this.retrieve(url, "PUT", body, cb, token);
         }   
     }
 
     componentDidMount(){
+        console.log("hi")
         const url = 'api/v1/todos/index'
         const cb = response => {
             response.tagList.map((e, index) => {
@@ -188,7 +183,7 @@ class Todos extends React.Component {
     createDropdownMenu(){
         return [(<a key={0} 
                     className="dropdown-item"
-                    onClick={() => this.setState(state => ({sort_by: null}))}>
+                    onClick={() => this.setState(state => ({sort_by_tag: null}))}>
                         None
                 </a>),
             ...this.state.tagList.map(e => {
@@ -196,7 +191,7 @@ class Todos extends React.Component {
                 <a key={e.id} 
                    className="dropdown-item dropdown-ul"
                    style={{color:`#${e.hex}`}}
-                   onClick={() => this.setState(state => ({sort_by: e.id}))}>
+                   onClick={() => this.setState(state => ({sort_by_tag: e}))}>
                         {e.name}
                 </a>
             )
@@ -204,7 +199,7 @@ class Todos extends React.Component {
     }
 
     render() {
-        const todos = this.state.todos.filter(e => !this.state.sort_by ? true : this.state.tags[e.id].some(x => x.id == this.state.sort_by))
+        const todos = this.state.todos.filter(e => !this.state.sort_by_tag ? true : this.state.tags[e.id].some(x => x.id == this.state.sort_by_tag.id))
         const completedTodos = todos.filter(x => x.completed == true)
         const uncompletedTodos = todos.filter(x => x.completed == false)
         completedTodos.sort(this.comp)
@@ -226,7 +221,9 @@ class Todos extends React.Component {
                                 </div>
                             </form> 
                             <div className="dropdown">
-                                <button className="btn btn-secondary dropdown-toggle" 
+                                <button className="btn btn-secondary dropdown-toggle dropdown_btn"
+                                        style = {{backgroundColor: `#${this.state.sort_by_tag ? this.state.sort_by_tag.hex : "545b62"}`,
+                                                  opacity: 0.7}}
                                         type="button" 
                                         id="dropdownMenuButton" 
                                         data-toggle="dropdown" 
@@ -258,8 +255,8 @@ class Todos extends React.Component {
                            tagList = {this.state.tagList} 
                            retrieve ={this.retrieve}
                            tags = {this.state.tags}
-                           sort_by = {this.state.sort_by}
-                           nullify_sort_by = {() => this.setState(state => ({sort_by: null}))}/>
+                           sort_by_tag = {this.state.sort_by_tag}
+                           nullify_sort_by = {() => this.setState(state => ({sort_by_tag: null}))}/>
                 </Modal>
             </div>
         );
