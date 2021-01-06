@@ -96,3 +96,12 @@ img{
     background: black;
     margin: 0;
 }
+
+.setting-row{
+    width: 100%;
+    margin: 0px;
+}
+
+.dropdown-ul{
+    background-color: white;
+}

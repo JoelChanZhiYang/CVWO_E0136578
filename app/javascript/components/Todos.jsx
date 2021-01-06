@@ -12,7 +12,9 @@ class Todos extends React.Component {
             todos: [],
             popUp: false,
             tags: {},
-            tagList:[]
+            tagList:[],
+            sort_by: null,
+
         };
         this.onSubmit = this.onSubmit.bind(this);
         this.onDelete = this.onDelete.bind(this);
@@ -68,9 +70,9 @@ class Todos extends React.Component {
                 completed: false};
         const token = document.querySelector('meta[name="csrf-token"]').content;
         const cb = response => {
-            const new_state = this.state.todos.slice(0);
-            new_state.unshift(response);
-            this.setState({todos:new_state});
+            this.setState(state => ({todos: state.todos.concat(response),
+                                     tags: {...state.tags, [response.id]:[]}})
+            );
             event.target[0].value = "";
         }
         this.retrieve(url, "POST", body, cb, token)
@@ -148,7 +150,6 @@ class Todos extends React.Component {
     }
     
     make_todo_html(action, index, todo){
-        const halt = e => e.stopPropagation();
         const tag_labels = (
         <div className="tag_label_container">
             {this.state.tagList.filter(tag => this.state.tags[todo.id].some(cur_tag => cur_tag.id == tag.id)).map(e => (
@@ -167,7 +168,7 @@ class Todos extends React.Component {
                             value = {todo.id} 
                             checked = {todo.completed ? true : false} 
                             onChange={this.changeCompletedStatus(todo)}
-                            onClick = {halt} // This is to prevent the click event from propogating into the parent div
+                            onClick = {e => e.stopPropagation()} // This is to prevent the click event from propogating into the parent div
 
                             className="form-check-input checkBox"
                         />
@@ -184,24 +185,57 @@ class Todos extends React.Component {
             )
     }
 
+    createDropdownMenu(){
+        return [(<a key={0} 
+                    className="dropdown-item">
+                        None
+                </a>),
+            ...this.state.tagList.map(e => {
+            return (
+                <a key={e.id} 
+                   className="dropdown-item dropdown-ul"
+                   style={{color:`#${e.hex}`}}
+                   onClick={() => this.setState(state => ({sort_by: e.id}))}>
+                        {e.name}
+                </a>
+            )
+        })];
+    }
+
     render() {
-        const todos = this.state.todos
+        const todos = this.state.todos.filter(e => !this.state.sort_by ? true : this.state.tags[e.id].some(x => x.id == this.state.sort_by))
         const completedTodos = todos.filter(x => x.completed == true)
         const uncompletedTodos = todos.filter(x => x.completed == false)
         completedTodos.sort(this.comp)
         uncompletedTodos.sort(this.comp)
         const completed_out = completedTodos.map(todo => this.make_todo_html(todo.task, todo.id, todo));
         const uncompleted_out = uncompletedTodos.map(todo=> this.make_todo_html(todo.task, todo.id, todo));
+        const dropdown_menu = this.createDropdownMenu()
 
         return (
             <div className="container mt-4">
                 <div className= "row justify-content-center">
                     <div className="col-sm-12 col-md-7 col-lg-5">
                         <img src={logo}></img>
-                        <form onSubmit={this.onSubmit} className="form-inline add_todo" autoComplete="off">
-                            <input type="text" name = "new_todo" className="form-control block col-8"></input>
-                            <input type="submit" className="addTodoButton btn btn-info col-4" value="submit"/>
-                        </form>
+                        <div className="form-row setting-row">
+                            <form onSubmit={this.onSubmit} className="input-group add_todo col" autoComplete="off">
+                                <input type="text" name = "new_todo" className="form-control block"></input>
+                                <div className="input-group-append">
+                                    <input type="submit" className="addTodoButton btn btn-info" value="submit"/>
+                                </div>
+                            </form> 
+                            <div className="dropdown">
+                                <button className="btn btn-secondary dropdown-toggle" 
+                                        type="button" 
+                                        id="dropdownMenuButton" 
+                                        data-toggle="dropdown" 
+                                        aria-haspopup="true" 
+                                        aria-expanded="false"/>
+                                <div className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                                    {dropdown_menu}
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 

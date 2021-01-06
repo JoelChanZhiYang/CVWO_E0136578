@@ -52,9 +52,9 @@ class Popup extends React.Component {
         const body = {todo_id: todo.id,
                       tag_id: tag.id};
         const cb = response => {
-            const new_arr = this.state.tags.slice();
-            new_arr.push(response.tag);
-            this.setState({tags: new_arr});
+            this.setState(state => {
+                return {tags: state.tags.concat(response.tag)}
+            })
         };
 
         this.props.retrieve(url, "POST", body, cb, token);
@@ -68,6 +68,7 @@ class Popup extends React.Component {
         const cb = response => {
             let new_arr = this.state.tags.slice();
             new_arr = new_arr.filter(e => e.id !== response.tag.id);
+            
             this.setState({tags: new_arr});
         };
 
@@ -121,6 +122,7 @@ class Popup extends React.Component {
             let newTag = this.state.tagList.slice();
             response.tag.hex = response.color.hex
             newTag.push(response.tag);  
+            
             this.setState({tagList: newTag});
         };
         this.props.retrieve(url, "POST", body, cb, token);
@@ -142,7 +144,7 @@ class Popup extends React.Component {
                 {TagHTML}
                 {this.state.newTag ? this.newTagHTML() : ""}
                 <br></br>
-                {!this.state.newTag && this.state.tagList.length < 10 ? <input type="button" value="+" onClick={this.openNewTag}/> : ""
+                {!this.state.newTag && this.state.tagList.length < 10 ? <input type="button" value="+" onClick={this.openNewTag} className="btn addTagBtn"/> : ""
                 }
 
             </div>

@@ -74,3 +74,14 @@
     width: 80%;
 }
 
+.addTagBtn{
+    background: #6E74AC;
+    border: white;
+    font-weight: 1000;
+    font-size: large;
+    color: white;
+    padding: 8px;
+    border: 1px solid white;
+    width: 40px;
+    margin-top: 7px;
+}
