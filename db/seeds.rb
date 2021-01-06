@@ -32,9 +32,17 @@ Todo.delete_all
 
 colors = ['e6194b', '3cb44b', 'ffe119', '4363d8', 'f58231', '911eb4', '46f0f0', 'f032e6', 'bcf60c', 'fabebe', '008080', 'e6beff', '9a6324', 
         'fffac8', '800000', 'aaffc3', '808000', 'ffd8b1', '000075', '808080']
-tasks_uncompleted = ["Buy milk", "Go for a run", "Read a book", "Make bed", "Walk dog", "Wash dishes", "Vaccuum the floor", "Buy medication"]
+tasks_uncompleted = ["Buy milk", "Go for a run", "Read a book", "Make bed", "Walk dog", "Wash dishes", "Vaccuum the floor", "Buy medication", "Do tutorial"]
 tasks_completed = ["Buy a bedframe", "Eat chips", "Procrastinate", "Complete CVWO To-do List", "Call home", "Make Milo"]
 tags = ["Important", "Household Chores", "Daily Tasks", "Urgent", "Optional", "School", "Family"]
+tags_for_todo = {"Buy milk": ["Household Chores", "Daily Tasks", "Urgent"],
+                 "Go for a run": ["Important", "Daily Tasks", "Optional"],
+                 "Read a book": ["Important", "Daily Tasks","Optional"],
+                 "Make bed": ["Household Chores", "Daily Tasks"],
+                 "Wash dishes": ["Daily Tasks", "Urgent"],
+                 "Vaccuum the floor": ["Daily Tasks"],
+                 "Buy medication":["Urgent", "Important"],
+                 "Do tutorial":["School","Urgent","Important"]}
 
 colors.each do |i|
     Color.create!(
@@ -66,3 +74,9 @@ tags.each do |i|
     )
 end
 
+tags_for_todo.each do |key, value|
+    todo = Todo.where(task: "#{key}").first
+    value.each do |i|
+        todo.tags << Tag.where(name: "#{i}").first
+    end
+end
