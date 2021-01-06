@@ -257,7 +257,9 @@ class Todos extends React.Component {
                            input={this.changeTodoTask(this.state.popUpTodo)} 
                            tagList = {this.state.tagList} 
                            retrieve ={this.retrieve}
-                           tags = {this.state.tags}/>
+                           tags = {this.state.tags}
+                           sort_by = {this.state.sort_by}
+                           nullify_sort_by = {() => this.setState(state => ({sort_by: null}))}/>
                 </Modal>
             </div>
         );

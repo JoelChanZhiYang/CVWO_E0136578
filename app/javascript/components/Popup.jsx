@@ -41,6 +41,7 @@ class Popup extends React.Component {
         const body = {tag_id: event.target.value}
         const cb = response => {
             let newTags = this.state.tagList.slice();
+            parseInt(event.target.value) === this.props.sort_by ? this.props.nullify_sort_by() : ""
             this.setState({tagList: newTags.filter(e => e.id !== parseInt(event.target.value))});
         };
         this.props.retrieve(url, "DELETE", body, cb, token);
@@ -68,7 +69,6 @@ class Popup extends React.Component {
         const cb = response => {
             let new_arr = this.state.tags.slice();
             new_arr = new_arr.filter(e => e.id !== response.tag.id);
-            
             this.setState({tags: new_arr});
         };
 
