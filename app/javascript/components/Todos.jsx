@@ -187,7 +187,8 @@ class Todos extends React.Component {
 
     createDropdownMenu(){
         return [(<a key={0} 
-                    className="dropdown-item">
+                    className="dropdown-item"
+                    onClick={() => this.setState(state => ({sort_by: null}))}>
                         None
                 </a>),
             ...this.state.tagList.map(e => {
